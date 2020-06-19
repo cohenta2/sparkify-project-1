@@ -33,7 +33,7 @@ def process_log_file(cur, filepath):
     df = df[df['page'] == 'NextSong']
 
     # convert timestamp column to datetime
-    t = pd.to_datetime(df['ts'])
+    t = pd.to_datetime(df['ts'], unit='ms')
     
     # insert time data records
     time_data = ([t.values, t.dt.hour, t.dt.day, t.dt.weekofyear, t.dt.month, t.dt.year, t.dt.weekday])
@@ -58,7 +58,7 @@ def process_log_file(cur, filepath):
         songid, artistid = results if results else None, None
 
         # insert songplay record
-        songplay_data = (row.ts, row.userId, row.level, songid,  artistid, row.sessionId)
+        songplay_data = (pd.to_datetime(row.ts, unit='ms'), row.userId, row.level, songid,  artistid, row.sessionId, row.location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
 
 
